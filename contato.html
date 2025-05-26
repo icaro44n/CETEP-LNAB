@@ -1,0 +1,107 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contato do CETEP NLAB, Alagoinhas, Bahia.">
+  <meta name="keywords" content="CETEP NLAB, contato, Alagoinhas, Bahia">
+  <meta name="author" content="CETEP NLAB">
+  <title>Contato - CETEP NLAB</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <header class="fixed-header">
+    <div class="container">
+      <div class="logo-container">
+        <img src="imagens/cetep.jpg" alt="Logo do CETEP NLAB" class="logo" />
+        <h1>CETEP NLAB</h1>
+      </div>
+      <nav aria-label="Navegação principal">
+        <ul>
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="sobre.html" class="nav-link">Sobre</a></li>
+          <li><a href="cursos.html" class="nav-link">Cursos</a></li>
+          <li><a href="projetos.html" class="nav-link">Projetos</a></li>
+          <li><a href="noticias.html" class="nav-link">Notícias</a></li>
+          <li><a href="depoimentos.html" class="nav-link">Depoimentos</a></li>
+          <li><a href="galeria.html" class="nav-link">Galeria</a></li>
+          <li><a href="contato.html" class="nav-link active" aria-current="page">Contato</a></li>
+        </ul>
+        <button class="menu-toggle" aria-label="Abrir menu"><i class="fas fa-bars"></i></button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="contato" class="section">
+      <div class="container">
+        <h2>Entre em Contato</h2>
+        <div class="contato-info">
+          <p><i class="fas fa-phone"></i> <strong>Telefone:</strong> (75) 3422-5642</p>
+          <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:amcms@hotmail.com">amcms@hotmail.com</a></p>
+          <p><i class="fab fa-instagram"></i> <strong>Instagram:</strong> <a href="https://www.instagram.com/cetepnlab/" target="_blank">@cetepnlab</a></p>
+          <p><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> <a href="https://chat.whatsapp.com/EXEMPLO" target="_blank">Grupo do CETEP</a></p>
+          <p><i class="fas fa-map-marker-alt"></i> <strong>Endereço:</strong> Rua Maria Feijó, 13, Centro, Alagoinhas, BA, CEP 48000-990</p>
+          <div class="contato-mapa">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.123456789!2d-38.421123456789!3d-12.1356789012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zCETEP+NLAB!5e0!3m2!1spt-BR!2sbr!4v1634567891234" width="100%" height="350" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy" title="Mapa do CETEP NLAB"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 CETEP NLAB - Alagoinhas. Todos os direitos reservados.</p>
+      <p>Desenvolvido em parceria com a Faculdade Santíssimo Sacramento.</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/cetepnlab/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://chat.whatsapp.com/EXEMPLO" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
